@@ -1,0 +1,28 @@
+services:
+  # 1) Backend: Node/Express API
+  - type: web
+    name: mern-auth-api
+    env: node
+    rootDir: server
+    buildCommand: "npm install"
+    startCommand: "npm start"
+    autoDeploy: true
+    envVars:
+      - key: MONGODB_URI
+        sync: false         # set in dashboard after first deploy, keeps it secret
+      - key: JWT_SECRET
+        sync: false
+      - key: CLIENT_ORIGIN
+        # We'll update this to the frontend URL after the first frontend deploy
+        value: https://example-frontend.onrender.com
+
+  # 2) Frontend: Vite React as Static Site
+  - type: static
+    name: mern-auth-client
+    rootDir: client
+    buildCommand: "npm install && npm run build"
+    staticPublishPath: "dist"
+    envVars:
+      - key: VITE_API_URL
+        # Update this to your API URL after backend deploy
+        value: https://example-api.onrender.com
