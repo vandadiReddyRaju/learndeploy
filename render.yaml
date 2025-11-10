@@ -1,28 +1,29 @@
+# render.yaml (fixed)
 services:
   # 1) Backend: Node/Express API
   - type: web
     name: mern-auth-api
-    env: node
+    runtime: node
     rootDir: server
     buildCommand: "npm install"
     startCommand: "npm start"
-    autoDeploy: true
+    plan: free
     envVars:
       - key: MONGODB_URI
-        sync: false         # set in dashboard after first deploy, keeps it secret
+        sync: false            # supply in dashboard on first deploy
       - key: JWT_SECRET
         sync: false
       - key: CLIENT_ORIGIN
-        # We'll update this to the frontend URL after the first frontend deploy
-        value: https://example-frontend.onrender.com
+        value: https://REPLACE_WITH_FRONTEND_URL   # update after frontend deploy
 
-  # 2) Frontend: Vite React as Static Site
-  - type: static
+  # 2) Frontend: Vite React as a Static Site
+  - type: web                  # <-- static sites use type:web
     name: mern-auth-client
+    runtime: static            # <-- and runtime: static
     rootDir: client
     buildCommand: "npm install && npm run build"
-    staticPublishPath: "dist"
+    staticPublishPath: "dist"  # <-- path to built files (Vite default)
+    plan: free
     envVars:
       - key: VITE_API_URL
-        # Update this to your API URL after backend deploy
-        value: https://example-api.onrender.com
+        value: https://REPLACE_WITH_API_URL        # update after backend deploy
